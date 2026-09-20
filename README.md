@@ -291,6 +291,280 @@ open_dog_sim_tools/
 
 ---
 
+## 0.7 用 git 管理和同步（推荐）
+
+工具包已经是一个 git 仓库（`main` 分支，首次提交已包含全部 106 个文件）。
+**git 的好处**：改坏了能回退、能看每次改了什么、多台电脑一条命令更新。
+
+### 日常：改完东西提交
+
+```bash
+cd ~/ros1_ws/sim_tools
+
+git status                      # 看哪些文件改了
+git diff                        # 看具体改了什么（重要！提交前先看一眼）
+git add -A
+git commit -m "把 x 改成 y"       # 写清楚改了什么
+```
+
+### 改坏了想回退
+
+```bash
+git checkout -- 文件名           # 撤销「还没提交」的改动（最常用）
+git log --oneline               # 看历史，找到要回的版本号
+git revert <版本号>              # 撤销某次「已提交」的改动（安全，会留记录）
+```
+
+### 同步到其他电脑
+
+**方式一：打包带走（不需要网络）**
+
+```bash
+# 本机
+cd ~/ros1_ws/sim_tools
+git bundle create /tmp/sim_tools.bundle --all
+scp /tmp/sim_tools.bundle 用户@目标机:/tmp/
+
+# 目标机（首次）
+cd ~/ros1_ws && git clone /tmp/sim_tools.bundle sim_tools
+# 目标机（以后每次更新）
+cd ~/ros1_ws/sim_tools && git pull /tmp/sim_tools.bundle main
+```
+
+**方式二：放到私有仓库（Gitee / GitHub / 自建）**
+
+```bash
+# 本机首次推到远端
+git remote add origin <你的仓库地址>
+git push -u origin main
+
+# 其他电脑首次拉取
+cd ~/ros1_ws && git clone <你的仓库地址> sim_tools
+
+# 以后本机改完推送
+git add -A && git commit -m "..." && git push
+
+# 其他电脑更新
+cd ~/ros1_ws/sim_tools && git pull
+```
+
+**方式三：rsync（不用 git，纯文件同步）**
+
+```bash
+rsync -av --delete --exclude='__pycache__' --exclude='*.pyc' \
+      ~/ros1_ws/sim_tools/  用户@目标机:~/ros1_ws/sim_tools/
+```
+
+### ★ 哪些文件不进 git（`.gitignore` 已配好）
+
+| 文件 | 是否进库 | 原因 |
+|---|---|---|
+| `simenv.conf` | ✅ 进 | 全空模板，所有机器共用 |
+| `simenv.conf.local` | ❌ **不进** | 含本机用户名和绝对路径，别的机器用了会指错 |
+| `__pycache__/` `*.pyc` | ❌ 不进 | Python 缓存，自动生成 |
+| `*.tar` `*.tar.gz` | ❌ 不进 | 打包产物，会越滚越大 |
+| `sim/` `*.log` | ❌ 不进 | 仿真日志，几百 M |
+
+### 注意事项
+
+1. **`simenv.conf.local` 绝不要提交** —— 里面有 `/home/yqc/...`，同步到别的机器会污染路径探测
+2. **可执行位很重要** —— `*.sh` 必须是 `-rwx`，否则同步过去跑不了。git 默认会保留
+3. **仓库里现在有重复文件** —— 顶层和 `scripts/` 下同名文件内容相同（历史遗留）。不影响使用，但改的时候建议**只改 `scripts/` 下的**，且两处都要改
+4. **`git checkout --` 会永久丢弃改动** —— 执行前先 `git diff` 确认
+
+---
+
+## 0.8 推到 GitHub（从零开始的完整教程）
+
+> **先说本机实测的网络情况**（2026-09-20 实测）：
+>
+> | 地址 | 状态 | 说明 |
+> |---|---|---|
+> | `github.com:443` (HTTPS) | ❌ **不通** | 国内网络常见，需要代理 |
+> | `github.com:22` (SSH) | ✅ **通** | 能握手（要求公钥） |
+> | `ssh.github.com:443` (SSH走443) | ✅ 通 | 备用通道 |
+> | `gitee.com:443` | ✅ 通 | 国内码云，不用代理 |
+>
+> **所以本机推荐走 SSH，不要用 HTTPS。** 如果 SSH 也不稳，直接用 Gitee（见文末）。
+
+### 第 1 步：生成 SSH 密钥（本机做，一次就好）
+
+```bash
+ssh-keygen -t ed25519 -C "你的邮箱@example.com"
+```
+
+**会问三个问题，全都直接按回车：**
+
+| 提示 | 怎么答 |
+|---|---|
+| `Enter file in which to save the key` | 直接回车（用默认 `~/.ssh/id_ed25519`） |
+| `Enter passphrase` | 直接回车（不设密码，方便；要安全就设一个） |
+| `Enter same passphrase again` | 直接回车 |
+
+然后看公钥内容：
+
+```bash
+cat ~/.ssh/id_ed25519.pub
+```
+
+输出形如（**这一整行就是要复制的东西，以 `ssh-ed25519` 开头、邮箱结尾**）：
+
+```
+ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAI... 你的邮箱@example.com
+```
+
+### 第 2 步：把公钥贴到 GitHub（网页操作）
+
+1. 浏览器打开 **https://github.com/settings/keys**
+   （或：登录 GitHub → 右上角头像 → **Settings** → 左侧 **SSH and GPG keys**）
+2. 点绿色按钮 **New SSH key**
+3. **Title** 随便填，比如 `我的笔记本`
+4. **Key type** 保持 `Authentication Key`
+5. **Key** 框里粘贴刚才 `cat` 出来的**一整行**
+6. 点 **Add SSH key**
+
+### 第 3 步：验证连上了
+
+```bash
+ssh -T git@github.com
+```
+
+**看到这句话就成功了：**
+
+```
+Hi 你的用户名! You've successfully authenticated, but GitHub does not provide shell access.
+```
+
+> 这句 `does not provide shell access` **是正常的**，不是错误 —— 说明认证通过了。
+
+### 第 4 步：在 GitHub 建一个空仓库（网页操作）
+
+1. 打开 **https://github.com/new**
+2. **Repository name** 填 `open_dog_sim_tools`
+3. **Description** 选填，如 `open-dog 仿真测试场景工具包`
+4. **★ 关键：下面两个都不要勾**
+   - ❌ 不要勾 `Add a README file`
+   - ❌ 不要选 `Add .gitignore`
+   - ❌ 不要选 `Choose a license`
+5. 点 **Create repository**
+
+> **为什么必须建空仓库**：你本地已经有代码和提交了。如果网页上建了 README，
+> 远端就有你本地没有的提交，`push` 会被拒绝（提示 `rejected / non-fast-forward`），
+> 新手最容易卡在这里。
+
+建完后页面会显示仓库地址，记下它：
+
+```
+git@github.com:你的用户名/open_dog_sim_tools.git
+```
+
+### 第 5 步：把本地代码推上去
+
+```bash
+cd ~/ros1_ws/sim_tools
+
+git remote add origin git@github.com:你的用户名/open_dog_sim_tools.git
+git push -u origin main
+```
+
+**`-u` 是记住这个远端**，以后直接 `git push` / `git pull` 就行，不用再打全名。
+
+成功的话会看到类似：
+
+```
+Enumerating objects: 110, done.
+Writing objects: 100% (110/110), 89.5 KiB | 2.1 MiB/s, done.
+To github.com:你的用户名/open_dog_sim_tools.git
+ * [new branch]      main -> main
+branch 'main' set up to track 'origin/main'.
+```
+
+### 第 6 步：其他电脑上拉取
+
+**首次**（目标机上执行一次）：
+
+```bash
+# 目标机也要有自己的 SSH key 并加到 GitHub（重复第 1~2 步）
+cd ~/ros1_ws && git clone git@github.com:你的用户名/open_dog_sim_tools.git sim_tools
+```
+
+**以后每次更新**（就一条命令）：
+
+```bash
+cd ~/ros1_ws/sim_tools && git pull
+```
+
+### 日常循环：改完代码
+
+```bash
+cd ~/ros1_ws/sim_tools
+git status                    # 看改了哪些
+git diff                      # 看具体改了什么
+git add -A
+git commit -m "说明改了什么"
+git push                      # 推到 GitHub
+```
+
+### 常见报错对照表
+
+| 报错 | 原因 | 解决 |
+|---|---|---|
+| `Permission denied (publickey)` | 公钥没加到 GitHub，或加错了 | 重做第 1~3 步，`ssh -T git@github.com` 必须能通过 |
+| `Connection timed out` / `port 443` | HTTPS 不通（本机就这情况） | 改用 SSH 地址：`git@github.com:用户/仓库.git` |
+| `rejected ... non-fast-forward` | 建仓库时勾了 README，远端有本地没有的提交 | `git pull --rebase origin main` 再 `git push` |
+| `fatal: remote origin already exists` | 已经加过 origin 了 | `git remote set-url origin <新地址>` |
+| `Please tell me who you are` | 没配 git 身份 | 见下方"补充" |
+| `src refspec main does not match any` | 本地没有提交，或分支不叫 main | 先 `git add -A && git commit`；`git branch -M main` |
+| 推上去发现**漏了文件** | 被 `.gitignore` 排除了 | `git check-ignore -v 文件名` 查是哪条规则 |
+
+### 补充：git 身份配置
+
+本仓库已经配好了（`yqc` / `yqc@localhost`）。**其他电脑首次用 git 需要配一次**：
+
+```bash
+git config --global user.name "你的名字"
+git config --global user.email "你的邮箱@example.com"
+```
+
+或只对这一个仓库生效（推荐，不动全局）：
+
+```bash
+cd ~/ros1_ws/sim_tools
+git config user.name "你的名字"
+git config user.email "你的邮箱@example.com"
+```
+
+### ★ 推之前一定检查：别把私密文件推上去
+
+```bash
+git status --short                    # 看有哪些要提交
+git check-ignore -v simenv.conf.local # 确认被忽略了
+git ls-files | grep -i local          # 应该没有输出
+```
+
+**`simenv.conf.local` 绝对不能推** —— 里面有 `/home/yqc/...` 和用户名，
+公开仓库里泄路径虽然不算大事，但白送给别人会污染他们的路径探测。
+
+### 如果 GitHub 实在连不上：用 Gitee
+
+`gitee.com:443` 本机实测**是通的**，不用代理。操作几乎一样：
+
+1. 注册 https://gitee.com
+2. 头像 → **设置** → **SSH 公钥** → 粘贴 `~/.ssh/id_ed25519.pub` 内容
+3. **+** → **新建仓库** → 名字填 `open_dog_sim_tools` → **不要**勾初始化
+4. 验证：`ssh -T git@gitee.com`
+5. 推送：
+
+```bash
+git remote add origin git@gitee.com:你的用户名/open_dog_sim_tools.git
+git push -u origin main
+```
+
+**注意**：Gitee 的默认分支叫 `master`，本地是 `main`。推送后到
+仓库「管理 → 默认分支」改成 `main` 即可；或者本地改名 `git branch -M master` 再推。
+
+---
+
 ## 1. 先自检（不用 ROS）
 
 ```bash
