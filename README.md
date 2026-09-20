@@ -377,24 +377,113 @@ rsync -av --delete --exclude='__pycache__' --exclude='*.pyc' \
 ## 0.8 推到 GitHub（从零开始的完整教程）
 
 > **你的账号信息**（本机已配好）：
-> - GitHub 用户名：**`jinbo-liao`**
+> - GitHub 用户名：**`jinbo-liao`**（API 实测存在，ID 316855035）
 > - 邮箱：`13246842228@163.com`
 > - SSH 公钥：**已生成**，位置 `~/.ssh/id_ed25519.pub`
-> - `~/.ssh/config`：**已配好**（GitHub 自动走 443 端口，绕开被封的 22 端口）
+> - `~/.ssh/config`：**已配好**（GitHub 自动走 443 端口）
 > - git 身份：**已配好**（`jinbo-liao` / `13246842228@163.com`）
 >
-> **你只差 3 件网页操作的事**：① 把公钥贴到 GitHub ② 建空仓库 ③ 执行 push。
+> ## ⚠️ 重要：本机打不开 github.com 网页
 >
-> **本机网络实测**（2026-09-20）：
+> **实测结论（2026-09-20）**：
 >
-> | 地址 | 状态 | 说明 |
+> | 地址 | 状态 | 影响 |
 > |---|---|---|
-> | `github.com:443` (HTTPS) | ❌ **不通** | 所以**绝对不要**用 `https://github.com/...` |
-> | `github.com:22` (SSH) | ✅ 通 | 能握手 |
-> | `ssh.github.com:443` | ✅ 通 | 已设为默认通道 |
-> | `gitee.com:443` | ✅ 通 | 国内备用，不用代理 |
+> | **`github.com:443`（网页/HTTPS）** | ❌ **不通** | **所以 `https://github.com/settings/keys` 这个网址在浏览器里打不开！** |
+> | `github.com:22`（SSH） | ✅ 通 | 能握手 |
+> | `ssh.github.com:443` | ✅ 通 | 已设为默认通道，**推送靠这个** |
+> | `api.github.com:443` | ✅ **通（HTTP 200）** | **API 可用** |
+> | `codeload.github.com:443` | ✅ 通 | 下载/克隆可用 |
+> | `gitee.com:443` | ✅ 通 | 国内码云，完全不用代理 |
+> | 本地代理端口 7890/1080/8080 等 | ❌ 全都没开 | 没有可用代理 |
+>
+> **核心矛盾：能推送代码（ssh.github.com:443 通），但开不了网页设置界面（github.com:443 不通）。**
+>
+> 所以「去网页上贴公钥」这条路**在你当前网络下走不通**，得换方案。见下面【方案选择】。
+>
+> ### 方案选择
+>
+> | 方案 | 需要网页吗 | 推荐度 |
+> |---|---|---|
+> | **A. 用 API + Token 自动传公钥** | ❌ 不需要 | ⭐⭐⭐ 但需要先在别处拿 Token |
+> | **B. 手机热点 / 换网络 开网页** | ✅ 一次性 | ⭐⭐⭐ **最省事** |
+> | **C. 改用 Gitee（码云）** | ✅ 但 gitee.com 能开 | ⭐⭐⭐ **最推荐** |
+> | **D. 不用远程，直接拷文件** | ❌ 不需要 | ⭐⭐ 兜底方案 |
+>
+> ### 方案 B：换网络（最快）
+>
+> 手机开热点给电脑，或连别的 WiFi，然后开 **https://github.com/settings/keys**。
+> 通常手机流量的网络对 GitHub 没有限制。贴完公钥、建好仓库，切回原来网络也能正常推送
+> （因为推送走 `ssh.github.com:443`，这条路本来就是通的）。
+>
+> ### 方案 C：用 Gitee（国内最稳）
+>
+> `gitee.com:443` 实测**完全通畅**，网页能开、能推送，不用代理：
+>
+> 1. 打开 **https://gitee.com** 注册/登录（可以用同一个邮箱 `13246842228@163.com`）
+> 2. 头像 → **设置** → 左侧 **安全设置 → SSH 公钥**
+> 3. 标题随便填，公钥框粘贴 `cat ~/.ssh/id_ed25519.pub` 的内容，点**确定**
+> 4. 点右上 **+** → **新建仓库** → 名字 `open_dog_sim_tools` → **不要勾**任何初始化选项 → 创建
+> 5. 本机执行：
+>
+> ```bash
+> cd ~/ros1_ws/sim_tools
+> ssh -T git@gitee.com                      # 应显示 Gitee 的欢迎语
+> git remote add origin git@gitee.com:jinbo-liao/open_dog_sim_tools.git
+> git push -u origin main
+> ```
+>
+> ⚠️ **Gitee 坑点：默认分支叫 `master`，本地是 `main`。**
+> 推送后到仓库「管理 → 默认分支」改成 `main`，否则别人克隆下来是**空的**
+> （实测报错 `remote HEAD refers to nonexistent ref`）。
+>
+> ### 方案 A：用 API 传公钥（命令行，不用网页）
+>
+> `api.github.com` 实测可用，所以可以用一个 Token 直接把公钥传上去：
+>
+> ```bash
+> # 需要先有一个 Token（见下方"怎么拿 Token"）
+> TOKEN=你的token
+> PUBKEY=$(cat ~/.ssh/id_ed25519.pub)
+>
+> curl -sS -X POST -H "Authorization: token $TOKEN" \
+>      -H "Accept: application/vnd.github+json" \
+>      https://api.github.com/user/keys \
+>      -d "{\"title\":\"我的笔记本\",\"key\":\"$PUBKEY\"}"
+> ```
+>
+> 返回 JSON 里有关键字 `"id"` 就是成功，返回 `"message": "Bad credentials"` 就是 Token 不对。
+>
+> **怎么拿 Token**：需要先在**能开 GitHub 网页的网络**（比如手机热点）上，
+> 打开 https://github.com/settings/tokens → **Generate new token (classic)** →
+> 勾选 **`admin:public_key`**（传公钥必需）→ 生成 → **复制那串 `ghp_...`**（只显示一次）。
+> 这仍然需要一次网页操作，只是比手点 SSH key 页面少几步。
+>
+> ### 方案 D：不用远程，直接拷（兜底）
+>
+> 如果上面都嫌麻烦，其实不用 GitHub 也行 —— `git bundle` 就能搬整个仓库：
+>
+> ```bash
+> # 本机
+> cd ~/ros1_ws/sim_tools
+> git bundle create /tmp/sim_tools.bundle --all
+> ls -lh /tmp/sim_tools.bundle        # 约 92K
+>
+> # 拷到其他电脑（U盘 / scp / 微信传输都行）后
+> cd ~/ros1_ws && git clone /tmp/sim_tools.bundle sim_tools
+> # 以后更新
+> cd ~/ros1_ws/sim_tools && git pull /tmp/sim_tools.bundle main
+> ```
+>
+> 缺点：没有网页界面看代码、不能在任意地方拉取。优点：**零配置、不需要任何账号**。
 
-### 第 1 步：把公钥贴到 GitHub（网页操作，只需一次）
+---
+
+### 以下步骤需要 github.com 网页可访问（网络通则适用）
+
+如果哪天你的网络能开 github.com 了（或用了方案 B 的热点），就按下面的标准流程走。
+
+### 第 1 步：把公钥贴到 GitHub（网页操作）
 
 你的公钥内容如下，**复制这一整行**：
 
