@@ -159,9 +159,27 @@ DEST="${TMPD}/${NAME}"
 mkdir -p "${DEST}"
 
 tar -C "${TOOLS_DIR}" \
-    --exclude='./scripts/__pycache__' --exclude='*.pyc' \
+    --exclude='__pycache__' --exclude='*.pyc' \
     --exclude='*.tar' --exclude='*.tar.gz' \
+    --exclude='./simenv.conf.local' \
     -cf - . | tar -C "${DEST}" -xf - 2>/dev/null
+
+# 双保险：解包后再清一遍（某些 tar 版本对 --exclude 匹配有差异）
+find "${DEST}" -name '__pycache__' -type d -prune -exec rm -rf {} + 2>/dev/null
+find "${DEST}" -name '*.pyc' -delete 2>/dev/null
+
+# 包内放一份「打包机实测值」供排查（是信息性文件，不是本机私密配置）
+cat > "${DEST}/simenv.conf.local" <<EOF
+# 打包机（$(hostname)）当时的实测解析值 —— 仅供排查参考
+# ★ 这个文件不会被 scripts/simenv.sh 加载（它只读 TOOLS_DIR/simenv.conf），
+#   所以里面的路径不会影响新机器上的自动探测。
+WS_ROOT=${WS_ROOT}
+CUSER=${CUSER}
+C_WS_ROOT=${C_WS_ROOT}
+C_TOOLS_DIR=${C_TOOLS_DIR}
+MSGS_DIR=${MSGS_DIR:-}
+GAIT_INFO=${GAIT_INFO:-}
+EOF
 
 if [[ ${WITH_SRC} -eq 1 && -n "${MSGS_DIR}" && -d "${MSGS_DIR}" ]]; then
   info "   附带工程源码: ${MSGS_DIR}"
