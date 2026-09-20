@@ -21,7 +21,7 @@
 ```bash
 cd ~/ros1_ws/sim_tools
 
-# ① 先自检（不需要 ROS，20 项）——出问题先跑这个
+# ① 先自检（不需要 ROS，28 项）——出问题先跑这个
 ./scripts/selftest.sh
 
 # ② 起仿真（宿主机执行；Gazebo/RViz 窗口会弹到你桌面）
@@ -261,10 +261,14 @@ Gazebo 里真正让身体离地，需要在 MPC 里给基座一个向上的速�
 ```
 open_dog_sim_tools/
 ├── README.md                    # 本文件
+├── GIT-使用说明.md              # git 使用完整手册
+├── simenv.conf                  # 路径配置（留空 = 自动探测，不要提交本机私密值）
 ├── launch/
 │   └── scene.launch             # ★ world 可参数化的启动文件（不改项目源码）
-├── scripts/
-│   ├── selftest.sh              # ★ 离线自检（不需要 ROS，20 项检查）
+├── scripts/                     # ★ 所有脚本都在这里（唯一位置）
+│   ├── simenv.sh                # ★ 路径解析（所有脚本 source 它，换机器不用改）
+│   ├── make_portable.sh         # 打一个「任意用户名/目录」都能用的工具包
+│   ├── selftest.sh              # ★ 离线自检（不需要 ROS，28 项检查）
 │   ├── sim_ctl.sh               # ★ 宿主机：起/停/查仿真（封装你的 ~/open-dog-ros1/run.sh）
 │   ├── container.sh             # ★ 被上面两个 source：docker 免 sudo 兜底 + 容器内执行
 │   ├── omni_world.py            # ★ 程序化生成 14 类测试场景
@@ -288,6 +292,10 @@ open_dog_sim_tools/
 └── config/
     └── joy_extended.yaml        # 扩展手柄映射（带步态切换按键）
 ```
+
+> **注意**：脚本**只在 `scripts/` 下有一份**。
+> （历史上顶层曾复制过一份同样的文件，已清理 —— 见 `GIT-使用说明.md` 第十节。）
+> 调用一律用 `./scripts/xxx.sh`。
 
 ---
 
@@ -878,7 +886,7 @@ cd open_dog_sim_tools
 ```
 
 会检查所有脚本语法、XML/YAML 合法性、14 个场景能否生成、11 项单元测试。
-**预期 20 通过 0 失败**。
+**预期 28 通过 0 失败**。
 
 ---
 
@@ -1089,7 +1097,7 @@ docker exec -it ros1 bash
 
 cd /home/yqc/ros1_ws/sim_tools
 
-./scripts/selftest.sh      # 20 通过 0 失败（不需要 ROS，宿主机也能跑）
+./scripts/selftest.sh      # 28 通过 0 失败（不需要 ROS，宿主机也能跑）
 ./scripts/gen_scenes.sh    # 生成 62 个场景
 ./scripts/run_scene.sh flat
 ```
@@ -1098,7 +1106,7 @@ cd /home/yqc/ros1_ws/sim_tools
 
 | 步骤 | 命令 | 预期 |
 |---|---|---|
-| 1 | `./scripts/selftest.sh` | 20 通过 0 失败 |
+| 1 | `./scripts/selftest.sh` | 28 通过 0 失败 |
 | 2 | `python3 scripts/omni_world.py --list` | 列出 14 个场景 |
 | 3 | `./scripts/gen_scenes.sh` | 生成 62 个 world，全部 XML 通过 |
 | 4 | `./scripts/run_scene.sh flat` | Gazebo 起来，狗站在平地上 |

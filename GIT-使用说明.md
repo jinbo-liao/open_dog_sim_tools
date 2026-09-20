@@ -382,39 +382,51 @@ git reflog                    # 找回误删的提交
 
 ## 十、这个仓库的特殊情况
 
-### ⚠️ 有重复文件
+### ✅ 重复文件已清理（2026-09-20）
 
-工具包的**顶层**和 **`scripts/` 目录下**存在同名且内容相同的文件：
+历史上工具包的**顶层**和 **`scripts/` 下**各有一份同名同内容的文件（18 个），
+是个坑：**改代码时容易只改一处，两边不一致**。
 
-```
-walk_test.sh   ≡  scripts/walk_test.sh
-run_scene.sh   ≡  scripts/run_scene.sh
-gait_bridge.py ≡  scripts/gait_bridge.py
-...（共 20 多个）
-```
+**已清理：删除顶层那 18 个，只保留 `scripts/` 下的一份。**
 
-这是历史遗留（早期复制出来的）。**不影响使用**，但：
+| 原来重复的文件 |
+|---|
+| `add_jump_gait.sh` `auto_run.py` `batch_test.sh` `container.sh` |
+| `gait_bridge.py` `gait_check.py` `gait.sh` `gen_scenes.sh` |
+| `jump_demo.py` `make_portable.sh` `omni_world.py` `run_scene.sh` |
+| `selftest.sh` `sim_ctl.sh` `simenv.sh` `sweep.sh` |
+| `test_fall_logic.py` `walk_test.sh` |
 
-- **改代码时要两处都改**，否则会不一致
-- 或者只在 `scripts/` 下改，然后把顶层那份删掉
+**删除前已验证**：所有脚本互相调用都用 `${TOOLS_DIR}/scripts/xxx` 形式，
+**没有任何地方引用顶层路径**，所以删掉安全（删完自检 28/28 通过）。
 
-**想清理的话**（确认顶层那份没被引用后）：
+**现在怎么写命令**（一律加 `scripts/`）：
 
 ```bash
-cd ~/ros1_ws/sim_tools
-grep -rn 'walk_test.sh' --include='*.sh' --include='*.py' .   # 先查引用
-git rm walk_test.sh run_scene.sh gait_bridge.py              # 按需列出
-git commit -m "删除与 scripts/ 重复的顶层文件"
+./scripts/selftest.sh              # ✅ 正确
+./scripts/walk_test.sh --gait trot # ✅ 正确
+
+./selftest.sh                      # ❌ 会报 No such file
 ```
 
-> ⚠️ **不确定就先别删。** 删错了用 `git checkout -- 文件名` 能救回来。
+**顶层保留的文件**（这些本来就该在顶层，不是重复）：
+
+| 文件 | 作用 |
+|---|---|
+| `README.md` | 主文档 |
+| `GIT-使用说明.md` | 本文档 |
+| `simenv.conf` | 路径配置（**只有顶层这一份**，`scripts/` 下没有） |
+| `launch/` `worlds/` `config/` | 目录 |
+
+> **万一删错了想恢复**：打了回退点 tag，
+> `git checkout backup-before-dedup -- <文件名>` 就能把文件捞回来。
 
 ### 仓库里有什么
 
 | 内容 | 说明 |
 |---|---|
-| 106 个文件 | 脚本 + 场景 + 配置 + 文档 |
-| `.git` 目录 | 约 880K（版本历史） |
+| 89 个文件 | 脚本 + 场景 + 配置 + 文档 |
+| `.git` 目录 | 约 900K（版本历史） |
 | 分支 | 只有 `main` |
 
 ### 相关文档
