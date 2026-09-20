@@ -1,0 +1,90 @@
+<?xml version="1.0" ?>
+<!-- 由 omni_world.py 自动生成: scene=dynamic seed=1 -->
+<sdf version="1.5">
+  <world name="dynamic">
+    <physics type="ode">
+      <type>world</type>
+      <max_step_size>0.001</max_step_size>
+      <real_time_update_rate>1000</real_time_update_rate>
+      <iters>500</iters>
+    </physics>
+    <include><uri>model://sun</uri></include>
+    <include><uri>model://ground_plane</uri></include>
+    <model name="dyn_box_0">
+      <static>false</static>
+      <pose>2.000 -0.293 0.200 0.0000 0.0000 0.0000</pose>
+      <link name="link">
+        <collision name="collision">
+          <geometry><box><size>0.200 0.200 0.400</size></box></geometry>
+          <surface><friction><ode><mu>0.6</mu><mu2>0.6</mu2></ode></friction></surface>
+        </collision>
+        <visual name="visual">
+          <geometry><box><size>0.200 0.200 0.400</size></box></geometry>
+          <material><script><uri>file://media/materials/scripts/gazebo.material</uri>
+            <name>Gazebo/Orange</name></script></material>
+        </visual>
+      </link>
+    </model>
+    <model name="dyn_box_1">
+      <static>false</static>
+      <pose>2.900 0.278 0.200 0.0000 0.0000 0.0000</pose>
+      <link name="link">
+        <collision name="collision">
+          <geometry><box><size>0.200 0.200 0.400</size></box></geometry>
+          <surface><friction><ode><mu>0.6</mu><mu2>0.6</mu2></ode></friction></surface>
+        </collision>
+        <visual name="visual">
+          <geometry><box><size>0.200 0.200 0.400</size></box></geometry>
+          <material><script><uri>file://media/materials/scripts/gazebo.material</uri>
+            <name>Gazebo/Orange</name></script></material>
+        </visual>
+      </link>
+    </model>
+    <model name="dyn_box_2">
+      <static>false</static>
+      <pose>3.800 0.211 0.200 0.0000 0.0000 0.0000</pose>
+      <link name="link">
+        <collision name="collision">
+          <geometry><box><size>0.200 0.200 0.400</size></box></geometry>
+          <surface><friction><ode><mu>0.6</mu><mu2>0.6</mu2></ode></friction></surface>
+        </collision>
+        <visual name="visual">
+          <geometry><box><size>0.200 0.200 0.400</size></box></geometry>
+          <material><script><uri>file://media/materials/scripts/gazebo.material</uri>
+            <name>Gazebo/Orange</name></script></material>
+        </visual>
+      </link>
+    </model>
+    <model name="dyn_box_3">
+      <static>false</static>
+      <pose>4.700 -0.196 0.200 0.0000 0.0000 0.0000</pose>
+      <link name="link">
+        <collision name="collision">
+          <geometry><box><size>0.200 0.200 0.400</size></box></geometry>
+          <surface><friction><ode><mu>0.6</mu><mu2>0.6</mu2></ode></friction></surface>
+        </collision>
+        <visual name="visual">
+          <geometry><box><size>0.200 0.200 0.400</size></box></geometry>
+          <material><script><uri>file://media/materials/scripts/gazebo.material</uri>
+            <name>Gazebo/Orange</name></script></material>
+        </visual>
+      </link>
+    </model>
+    <model name="dyn_box_4">
+      <static>false</static>
+      <pose>5.600 -0.004 0.200 0.0000 0.0000 0.0000</pose>
+      <link name="link">
+        <collision name="collision">
+          <geometry><box><size>0.200 0.200 0.400</size></box></geometry>
+          <surface><friction><ode><mu>0.6</mu><mu2>0.6</mu2></ode></friction></surface>
+        </collision>
+        <visual name="visual">
+          <geometry><box><size>0.200 0.200 0.400</size></box></geometry>
+          <material><script><uri>file://media/materials/scripts/gazebo.material</uri>
+            <name>Gazebo/Orange</name></script></material>
+        </visual>
+      </link>
+    </model>
+
+  </world>
+</sdf>

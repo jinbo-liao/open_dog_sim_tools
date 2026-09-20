@@ -1,0 +1,136 @@
+<?xml version="1.0" ?>
+<!--
+  障碍物场景：随机散布的箱子和柱子
+  用法（容器内，用本工具包的 scene.launch，它支持 world_name 参数）：
+    export ROBOT_TYPE=dmgo
+    roslaunch /path/to/open_dog_sim_tools/launch/scene.launch \
+      world_name:=/path/to/open_dog_sim_tools/worlds/obstacles.world
+  或用封装脚本： ./scripts/run_scene.sh obstacles
+  注意：项目自带的 empty_world.launch 里 world_name 是写死的
+  $(find legged_gazebo)/worlds/empty_world.world，传参无效，所以必须用 scene.launch。
+-->
+<sdf version="1.5">
+    <world name="obstacles">
+        <physics type="ode">
+            <type>world</type>
+            <max_step_size>0.001</max_step_size>
+            <real_time_update_rate>1000</real_time_update_rate>
+            <iters>500</iters>
+        </physics>
+
+        <include><uri>model://sun</uri></include>
+        <include><uri>model://ground_plane</uri></include>
+
+        <!-- ============ 障碍物：矮箱子（可跨过） ============ -->
+        <model name="box_low_1">
+            <static>true</static>
+            <pose>1.5 0.0 0.05 0 0 0</pose>
+            <link name="link">
+                <collision name="collision">
+                    <geometry><box><size>0.4 0.6 0.10</size></box></geometry>
+                    <surface><friction><ode><mu>1.0</mu><mu2>1.0</mu2></ode></friction></surface>
+                </collision>
+                <visual name="visual">
+                    <geometry><box><size>0.4 0.6 0.10</size></box></geometry>
+                    <material><script><uri>file://media/materials/scripts/gazebo.material</uri>
+                        <name>Gazebo/Orange</name></script></material>
+                </visual>
+            </link>
+        </model>
+
+        <!-- ============ 障碍物：中等箱子（需跳跃/绕行） ============ -->
+        <model name="box_mid_1">
+            <static>true</static>
+            <pose>3.2 0.0 0.125 0 0 0</pose>
+            <link name="link">
+                <collision name="collision">
+                    <geometry><box><size>0.3 0.6 0.25</size></box></geometry>
+                    <surface><friction><ode><mu>1.0</mu><mu2>1.0</mu2></ode></friction></surface>
+                </collision>
+                <visual name="visual">
+                    <geometry><box><size>0.3 0.6 0.25</size></box></geometry>
+                    <material><script><uri>file://media/materials/scripts/gazebo.material</uri>
+                        <name>Gazebo/Red</name></script></material>
+                </visual>
+            </link>
+        </model>
+
+        <!-- ============ 障碍物：高箱子（大概率摔倒，用于测试失败） ============ -->
+        <model name="box_high_1">
+            <static>true</static>
+            <pose>5.0 0.0 0.2 0 0 0</pose>
+            <link name="link">
+                <collision name="collision">
+                    <geometry><box><size>0.2 0.6 0.40</size></box></geometry>
+                    <surface><friction><ode><mu>1.0</mu><mu2>1.0</mu2></ode></friction></surface>
+                </collision>
+                <visual name="visual">
+                    <geometry><box><size>0.2 0.6 0.40</size></box></geometry>
+                    <material><script><uri>file://media/materials/scripts/gazebo.material</uri>
+                        <name>Gazebo/Blue</name></script></material>
+                </visual>
+            </link>
+        </model>
+
+        <!-- ============ 障碍物：柱子群（侧向避障） ============ -->
+        <model name="pillar_1">
+            <static>true</static>
+            <pose>2.4 0.7 0.3 0 0 0</pose>
+            <link name="link">
+                <collision name="collision">
+                    <geometry><cylinder><radius>0.06</radius><length>0.6</length></cylinder></geometry>
+                    <surface><friction><ode><mu>1.0</mu><mu2>1.0</mu2></ode></friction></surface>
+                </collision>
+                <visual name="visual">
+                    <geometry><cylinder><radius>0.06</radius><length>0.6</length></cylinder></geometry>
+                    <material><script><uri>file://media/materials/scripts/gazebo.material</uri>
+                        <name>Gazebo/Grey</name></script></material>
+                </visual>
+            </link>
+        </model>
+
+        <model name="pillar_2">
+            <static>true</static>
+            <pose>2.4 -0.7 0.3 0 0 0</pose>
+            <link name="link">
+                <collision name="collision">
+                    <geometry><cylinder><radius>0.06</radius><length>0.6</length></cylinder></geometry>
+                </collision>
+                <visual name="visual">
+                    <geometry><cylinder><radius>0.06</radius><length>0.6</length></cylinder></geometry>
+                    <material><script><uri>file://media/materials/scripts/gazebo.material</uri>
+                        <name>Gazebo/Grey</name></script></material>
+                </visual>
+            </link>
+        </model>
+
+        <model name="pillar_3">
+            <static>true</static>
+            <pose>4.0 0.5 0.3 0 0 0</pose>
+            <link name="link">
+                <collision name="collision">
+                    <geometry><cylinder><radius>0.06</radius><length>0.6</length></cylinder></geometry>
+                </collision>
+                <visual name="visual">
+                    <geometry><cylinder><radius>0.06</radius><length>0.6</length></cylinder></geometry>
+                    <material><script><uri>file://media/materials/scripts/gazebo.material</uri>
+                        <name>Gazebo/Grey</name></script></material>
+                </visual>
+            </link>
+        </model>
+
+        <!-- ============ 终点标记 ============ -->
+        <model name="goal_marker">
+            <static>true</static>
+            <pose>8.0 0.0 0.005 0 0 0</pose>
+            <link name="link">
+                <visual name="visual">
+                    <geometry><cylinder><radius>0.4</radius><length>0.01</length></cylinder></geometry>
+                    <material><script><uri>file://media/materials/scripts/gazebo.material</uri>
+                        <name>Gazebo/Green</name></script></material>
+                </visual>
+            </link>
+        </model>
+
+    </world>
+</sdf>

@@ -1,0 +1,37 @@
+<?xml version="1.0" ?>
+<!-- 由 omni_world.py 自动生成: scene=flat seed=1 -->
+<sdf version="1.5">
+  <world name="flat">
+    <physics type="ode">
+      <type>world</type>
+      <max_step_size>0.001</max_step_size>
+      <real_time_update_rate>1000</real_time_update_rate>
+      <iters>500</iters>
+    </physics>
+    <include><uri>model://sun</uri></include>
+    <include><uri>model://ground_plane</uri></include>
+    <model name="start">
+      <static>true</static>
+      <pose>0.000 0.000 0.005 0 0 0</pose>
+      <link name="link">
+        <visual name="visual">
+          <geometry><cylinder><radius>0.300</radius><length>0.01</length></cylinder></geometry>
+          <material><script><uri>file://media/materials/scripts/gazebo.material</uri>
+            <name>Gazebo/Blue</name></script></material>
+        </visual>
+      </link>
+    </model>
+    <model name="goal">
+      <static>true</static>
+      <pose>5.000 0.000 0.005 0 0 0</pose>
+      <link name="link">
+        <visual name="visual">
+          <geometry><cylinder><radius>0.400</radius><length>0.01</length></cylinder></geometry>
+          <material><script><uri>file://media/materials/scripts/gazebo.material</uri>
+            <name>Gazebo/Green</name></script></material>
+        </visual>
+      </link>
+    </model>
+
+  </world>
+</sdf>

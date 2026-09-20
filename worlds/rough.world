@@ -1,0 +1,77 @@
+<?xml version="1.0" ?>
+<!-- 崎岖地形：随机散布的矮凸起，模拟不平地面，测试抗扰动能力 -->
+<sdf version="1.5">
+    <world name="rough">
+        <physics type="ode">
+            <type>world</type>
+            <max_step_size>0.001</max_step_size>
+            <real_time_update_rate>1000</real_time_update_rate>
+            <iters>500</iters>
+        </physics>
+
+        <include><uri>model://sun</uri></include>
+        <include><uri>model://ground_plane</uri></include>
+
+        <!-- 碎石凸起（不平地面） -->
+        <model name="rock_1"><static>true</static><pose>1.0 0.3 0.015 0 0 0</pose>
+            <link name="l"><collision name="c"><geometry><box><size>0.3 0.3 0.03</size></box></geometry></collision>
+            <visual name="v"><geometry><box><size>0.3 0.3 0.03</size></box></geometry>
+            <material><script><uri>file://media/materials/scripts/gazebo.material</uri>
+            <name>Gazebo/Grey</name></script></material></visual></link></model>
+
+        <model name="rock_2"><static>true</static><pose>1.6 -0.4 0.02 0 0 0</pose>
+            <link name="l"><collision name="c"><geometry><box><size>0.25 0.25 0.04</size></box></geometry></collision>
+            <visual name="v"><geometry><box><size>0.25 0.25 0.04</size></box></geometry>
+            <material><script><uri>file://media/materials/scripts/gazebo.material</uri>
+            <name>Gazebo/Grey</name></script></material></visual></link></model>
+
+        <model name="rock_3"><static>true</static><pose>2.2 0.1 0.025 0 0 0</pose>
+            <link name="l"><collision name="c"><geometry><box><size>0.35 0.35 0.05</size></box></geometry></collision>
+            <visual name="v"><geometry><box><size>0.35 0.35 0.05</size></box></geometry>
+            <material><script><uri>file://media/materials/scripts/gazebo.material</uri>
+            <name>Gazebo/Grey</name></script></material></visual></link></model>
+
+        <model name="rock_4"><static>true</static><pose>2.9 -0.2 0.02 0 0.2 0</pose>
+            <link name="l"><collision name="c"><geometry><box><size>0.2 0.4 0.04</size></box></geometry></collision>
+            <visual name="v"><geometry><box><size>0.2 0.4 0.04</size></box></geometry>
+            <material><script><uri>file://media/materials/scripts/gazebo.material</uri>
+            <name>Gazebo/Grey</name></script></material></visual></link></model>
+
+        <model name="rock_5"><static>true</static><pose>3.5 0.4 0.03 0 0 0</pose>
+            <link name="l"><collision name="c"><geometry><box><size>0.4 0.3 0.06</size></box></geometry></collision>
+            <visual name="v"><geometry><box><size>0.4 0.3 0.06</size></box></geometry>
+            <material><script><uri>file://media/materials/scripts/gazebo.material</uri>
+            <name>Gazebo/Grey</name></script></material></visual></link></model>
+
+        <model name="rock_6"><static>true</static><pose>4.2 -0.5 0.02 0 0 0</pose>
+            <link name="l"><collision name="c"><geometry><box><size>0.3 0.3 0.04</size></box></geometry></collision>
+            <visual name="v"><geometry><box><size>0.3 0.3 0.04</size></box></geometry>
+            <material><script><uri>file://media/materials/scripts/gazebo.material</uri>
+            <name>Gazebo/Grey</name></script></material></visual></link></model>
+
+        <model name="rock_7"><static>true</static><pose>4.9 0.0 0.035 0 0 0</pose>
+            <link name="l"><collision name="c"><geometry><box><size>0.5 0.5 0.07</size></box></geometry></collision>
+            <visual name="v"><geometry><box><size>0.5 0.5 0.07</size></box></geometry>
+            <material><script><uri>file://media/materials/scripts/gazebo.material</uri>
+            <name>Gazebo/Grey</name></script></material></visual></link></model>
+
+        <model name="rock_8"><static>true</static><pose>5.6 0.3 0.015 0 0 0</pose>
+            <link name="l"><collision name="c"><geometry><box><size>0.3 0.3 0.03</size></box></geometry></collision>
+            <visual name="v"><geometry><box><size>0.3 0.3 0.03</size></box></geometry>
+            <material><script><uri>file://media/materials/scripts/gazebo.material</uri>
+            <name>Gazebo/Grey</name></script></material></visual></link></model>
+
+        <model name="rock_9"><static>true</static><pose>6.3 -0.3 0.02 0 0 0</pose>
+            <link name="l"><collision name="c"><geometry><box><size>0.25 0.25 0.04</size></box></geometry></collision>
+            <visual name="v"><geometry><box><size>0.25 0.25 0.04</size></box></geometry>
+            <material><script><uri>file://media/materials/scripts/gazebo.material</uri>
+            <name>Gazebo/Grey</name></script></material></visual></link></model>
+
+        <model name="rock_10"><static>true</static><pose>7.0 0.1 0.025 0 0 0</pose>
+            <link name="l"><collision name="c"><geometry><box><size>0.35 0.35 0.05</size></box></geometry></collision>
+            <visual name="v"><geometry><box><size>0.35 0.35 0.05</size></box></geometry>
+            <material><script><uri>file://media/materials/scripts/gazebo.material</uri>
+            <name>Gazebo/Grey</name></script></material></visual></link></model>
+
+    </world>
+</sdf>

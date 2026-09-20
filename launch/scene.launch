@@ -1,0 +1,62 @@
+<?xml version="1.0"?>
+<!--
+  scene.launch —— 用自定义 world + 机器人 + RViz 启动仿真
+                  （等价于项目自带 empty_world.launch，只是 world 可换）
+
+  放在 open_dog_sim_tools/launch/ 下，不修改项目源码。
+  用法（容器内）：
+    export ROBOT_TYPE=dmgo
+    roslaunch /path/to/scene.launch world_name:=/abs/path/xxx.world
+
+  和项目 empty_world.launch 的唯一区别：
+    empty_world.launch 里 world_name 被写死成
+        $(find legged_gazebo)/worlds/empty_world.world
+    本文件把它变成 ${arg world_name}，其他（xacro、generate_urdf、
+    default.yaml、spawn 初始关节角、RViz）全部保持一致。
+-->
+<launch>
+    <arg name="robot_type" default="$(env ROBOT_TYPE)" doc="Robot type: [dmgo]"/>
+    <arg name="rviz" default="true"/>
+    <arg name="world_name" default="$(find legged_gazebo)/worlds/empty_world.world"
+         doc="要加载的 .world 文件绝对路径"/>
+    <arg name="gui" default="true"/>
+    <arg name="paused" default="false"/>
+    <arg name="verbose" default="false"/>
+
+    <!-- 和 empty_world.launch 一致的环境变量 -->
+    <env name="GAZEBO_MODEL_PATH"
+         value="$(find legged_gazebo)/models:$(optenv GAZEBO_MODEL_PATH)"/>
+    <env name="GAZEBO_RESOURCE_PATH"
+         value="$(find legged_gazebo)/worlds:$(optenv GAZEBO_RESOURCE_PATH)"/>
+
+    <param name="legged_robot_description"
+           command="$(find xacro)/xacro $(find legged_damiao_description)/urdf/robot.xacro
+                    robot_type:=$(arg robot_type)"/>
+
+    <node name="generate_urdf" pkg="legged_common" type="generate_urdf.sh" output="screen"
+          args="$(find legged_damiao_description)/urdf/robot.xacro $(arg robot_type)"/>
+
+    <!-- LeggedHWSim 的 IMU / 接触点配置（同 empty_world.launch） -->
+    <rosparam file="$(find legged_gazebo)/config/default.yaml" command="load"/>
+
+    <!-- 关键：world_name 走参数，而不是写死 -->
+    <include file="$(find gazebo_ros)/launch/empty_world.launch">
+        <arg name="world_name" value="$(arg world_name)"/>
+        <arg name="gui" value="$(arg gui)"/>
+        <arg name="paused" value="$(arg paused)"/>
+        <arg name="verbose" value="$(arg verbose)"/>
+        <arg name="use_sim_time" value="true"/>
+    </include>
+
+    <!-- 机器人，初始关节角与项目 empty_world.launch 完全一致 -->
+    <node name="spawn_urdf" pkg="gazebo_ros" type="spawn_model" clear_params="true"
+          args="-z 0.5 -param legged_robot_description -urdf -model $(arg robot_type)
+          -J LF_HAA 0.0 -J LF_HFE -0.0 -J LF_KFE -2.101
+          -J LH_HAA 0.0 -J LH_HFE -0.0 -J LH_KFE -2.101
+          -J RF_HAA 0.0 -J RF_HFE -0.0 -J RF_KFE -2.101
+          -J RH_HAA 0.0 -J RH_HFE -0.0 -J RH_KFE -2.101"
+          output="screen"/>
+
+    <node if="$(arg rviz)" name="rviz" pkg="rviz" type="rviz"
+          args="-d $(find legged_controllers)/rviz/legged_robot.rviz" required="true"/>
+</launch>

@@ -1,0 +1,132 @@
+# 扩展手柄映射：Logitech F710 (X 模式)
+# 用法：替换 legged_controllers/config/joy.yaml，或
+#       roslaunch legged_controllers joy_teleop.launch teleop_config:=<本文件路径>
+#
+# F710 X 模式下的 axes/buttons 编号（用 `rostopic echo /joy` 可验证）：
+#   axes:    0=左摇杆左右  1=左摇杆上下  2=十字键左右  3=右摇杆左右  4=右摇杆上下  5=十字键上下
+#   buttons: 0=X  1=A  2=B  3=Y  4=LB  5=RB  6=LT  7=RT  8=Back  9=Start  10=左摇杆按下  11=右摇杆按下
+#
+# 关键：joy_teleop 要求 deadman_buttons 必须按住才能触发该条映射。
+# 下面的映射设计成：按住 LB(4) 是"运动模式"，按住 RB(5) 是"步态模式"。
+
+teleop:
+  # ========== 运动控制（按住 LB=4）==========
+  walk:
+    type: topic
+    message_type: geometry_msgs/Twist
+    topic_name: cmd_vel
+    deadman_buttons: [ 4 ]        # 按住 LB 才能走（安全键）
+    axis_mappings:
+      - axis: 1                   # 左摇杆上下
+        target: linear.x
+        scale: 0.5
+      - axis: 0                   # 左摇杆左右
+        target: linear.y
+        scale: 0.4
+      - axis: 3                   # 右摇杆左右
+        target: angular.z
+        scale: 1.4
+
+  # ========== 步态切换（按住 RB=5 + 对应按键）==========
+  # 注意：joy_teleop 的 topic 类型只能发 std_msgs/Float32，
+  # 而 OCS2 的步态是通过 legged_robot_gait_command 节点的交互终端切换的。
+  # 所以这里发到自定义话题，由 gait_bridge.py 转发到终端（见 scripts/gait_bridge.py）。
+  gait_stance:
+    type: topic
+    message_type: std_msgs/Float32
+    topic_name: gait_cmd_stance
+    deadman_buttons: [ 5 ]
+    axis_mappings:
+      - button: 0                 # RB + X
+        target: data
+        scale: 1
+        offset: 0
+
+  gait_trot:
+    type: topic
+    message_type: std_msgs/Float32
+    topic_name: gait_cmd_trot
+    deadman_buttons: [ 5 ]
+    axis_mappings:
+      - button: 1                 # RB + A
+        target: data
+        scale: 1
+        offset: 0
+
+  gait_flying_trot:
+    type: topic
+    message_type: std_msgs/Float32
+    topic_name: gait_cmd_flying_trot
+    deadman_buttons: [ 5 ]
+    axis_mappings:
+      - button: 2                 # RB + B
+        target: data
+        scale: 1
+        offset: 0
+
+  gait_skipping:
+    type: topic
+    message_type: std_msgs/Float32
+    topic_name: gait_cmd_skipping
+    deadman_buttons: [ 5 ]
+    axis_mappings:
+      - button: 3                 # RB + Y
+        target: data
+        scale: 1
+        offset: 0
+
+  gait_pawup:
+    type: topic
+    message_type: std_msgs/Float32
+    topic_name: gait_cmd_pawup
+    deadman_buttons: [ 5 ]
+    axis_mappings:
+      - button: 6                 # RB + LT
+        target: data
+        scale: 1
+        offset: 0
+
+  # ========== 启动 / 姿态 / 急停 ==========
+  start_controller:
+    type: topic
+    message_type: std_msgs/Float32
+    topic_name: start_controller
+    deadman_buttons: [ 4 ]
+    axis_mappings:
+      - button: 9                 # LB + Start
+        target: data
+        scale: 2
+        offset: 0
+
+  emergency_stop:
+    type: topic
+    message_type: std_msgs/Float32
+    topic_name: emergency_stop
+    deadman_buttons: [ 8 ]        # Back 键
+    axis_mappings:
+      - button: 8
+        target: data
+        scale: 2
+        offset: 0
+
+  set_stance:
+    type: topic
+    message_type: std_msgs/Float32
+    topic_name: set_stance
+    deadman_buttons: [ 4 ]
+    axis_mappings:
+      - button: 3                 # LB + Y
+        target: data
+        scale: 2
+        offset: 0
+
+  set_trot:
+    type: topic
+    message_type: std_msgs/Float32
+    topic_name: set_trot
+    deadman_buttons: [ 4 ]
+    axis_mappings:
+      - button: 2                 # LB + B
+        target: data
+        scale: 2
+        offset: 0

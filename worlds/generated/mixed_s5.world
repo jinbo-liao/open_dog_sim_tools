@@ -1,0 +1,296 @@
+<?xml version="1.0" ?>
+<!-- 由 omni_world.py 自动生成: scene=mixed seed=5 -->
+<sdf version="1.5">
+  <world name="mixed">
+    <physics type="ode">
+      <type>world</type>
+      <max_step_size>0.001</max_step_size>
+      <real_time_update_rate>1000</real_time_update_rate>
+      <iters>500</iters>
+    </physics>
+    <include><uri>model://sun</uri></include>
+    <include><uri>model://ground_plane</uri></include>
+    <model name="mx_wl_0">
+      <static>true</static>
+      <pose>2.500 0.425 0.250 0.0000 0.0000 0.0000</pose>
+      <link name="link">
+        <collision name="collision">
+          <geometry><box><size>2.000 0.100 0.500</size></box></geometry>
+          <surface><friction><ode><mu>1.0</mu><mu2>1.0</mu2></ode></friction></surface>
+        </collision>
+        <visual name="visual">
+          <geometry><box><size>2.000 0.100 0.500</size></box></geometry>
+          <material><script><uri>file://media/materials/scripts/gazebo.material</uri>
+            <name>Gazebo/Grey</name></script></material>
+        </visual>
+      </link>
+    </model>
+    <model name="mx_wr_0">
+      <static>true</static>
+      <pose>2.500 -0.425 0.250 0.0000 0.0000 0.0000</pose>
+      <link name="link">
+        <collision name="collision">
+          <geometry><box><size>2.000 0.100 0.500</size></box></geometry>
+          <surface><friction><ode><mu>1.0</mu><mu2>1.0</mu2></ode></friction></surface>
+        </collision>
+        <visual name="visual">
+          <geometry><box><size>2.000 0.100 0.500</size></box></geometry>
+          <material><script><uri>file://media/materials/scripts/gazebo.material</uri>
+            <name>Gazebo/Grey</name></script></material>
+        </visual>
+      </link>
+    </model>
+    <model name="mx_step_1_0">
+      <static>true</static>
+      <pose>4.000 0.000 0.033 0.0000 0.0000 0.0000</pose>
+      <link name="link">
+        <collision name="collision">
+          <geometry><box><size>0.350 1.000 0.065</size></box></geometry>
+          <surface><friction><ode><mu>1.0</mu><mu2>1.0</mu2></ode></friction></surface>
+        </collision>
+        <visual name="visual">
+          <geometry><box><size>0.350 1.000 0.065</size></box></geometry>
+          <material><script><uri>file://media/materials/scripts/gazebo.material</uri>
+            <name>Gazebo/DarkGrey</name></script></material>
+        </visual>
+      </link>
+    </model>
+    <model name="mx_step_1_1">
+      <static>true</static>
+      <pose>4.350 0.000 0.065 0.0000 0.0000 0.0000</pose>
+      <link name="link">
+        <collision name="collision">
+          <geometry><box><size>0.350 1.000 0.130</size></box></geometry>
+          <surface><friction><ode><mu>1.0</mu><mu2>1.0</mu2></ode></friction></surface>
+        </collision>
+        <visual name="visual">
+          <geometry><box><size>0.350 1.000 0.130</size></box></geometry>
+          <material><script><uri>file://media/materials/scripts/gazebo.material</uri>
+            <name>Gazebo/DarkGrey</name></script></material>
+        </visual>
+      </link>
+    </model>
+    <model name="mx_step_1_2">
+      <static>true</static>
+      <pose>4.700 0.000 0.098 0.0000 0.0000 0.0000</pose>
+      <link name="link">
+        <collision name="collision">
+          <geometry><box><size>0.350 1.000 0.195</size></box></geometry>
+          <surface><friction><ode><mu>1.0</mu><mu2>1.0</mu2></ode></friction></surface>
+        </collision>
+        <visual name="visual">
+          <geometry><box><size>0.350 1.000 0.195</size></box></geometry>
+          <material><script><uri>file://media/materials/scripts/gazebo.material</uri>
+            <name>Gazebo/DarkGrey</name></script></material>
+        </visual>
+      </link>
+    </model>
+    <model name="mx_pole_2_0">
+      <static>true</static>
+      <pose>6.038 0.229 0.300 0 0 0</pose>
+      <link name="link">
+        <collision name="collision">
+          <geometry><cylinder><radius>0.060</radius><length>0.600</length></cylinder></geometry>
+          <surface><friction><ode><mu>1.0</mu><mu2>1.0</mu2></ode></friction></surface>
+        </collision>
+        <visual name="visual">
+          <geometry><cylinder><radius>0.060</radius><length>0.600</length></cylinder></geometry>
+          <material><script><uri>file://media/materials/scripts/gazebo.material</uri>
+            <name>Gazebo/Red</name></script></material>
+        </visual>
+      </link>
+    </model>
+    <model name="mx_pole_2_1">
+      <static>true</static>
+      <pose>6.762 0.182 0.300 0 0 0</pose>
+      <link name="link">
+        <collision name="collision">
+          <geometry><cylinder><radius>0.060</radius><length>0.600</length></cylinder></geometry>
+          <surface><friction><ode><mu>1.0</mu><mu2>1.0</mu2></ode></friction></surface>
+        </collision>
+        <visual name="visual">
+          <geometry><cylinder><radius>0.060</radius><length>0.600</length></cylinder></geometry>
+          <material><script><uri>file://media/materials/scripts/gazebo.material</uri>
+            <name>Gazebo/Red</name></script></material>
+        </visual>
+      </link>
+    </model>
+    <model name="mx_pole_2_2">
+      <static>true</static>
+      <pose>6.295 0.408 0.300 0 0 0</pose>
+      <link name="link">
+        <collision name="collision">
+          <geometry><cylinder><radius>0.060</radius><length>0.600</length></cylinder></geometry>
+          <surface><friction><ode><mu>1.0</mu><mu2>1.0</mu2></ode></friction></surface>
+        </collision>
+        <visual name="visual">
+          <geometry><cylinder><radius>0.060</radius><length>0.600</length></cylinder></geometry>
+          <material><script><uri>file://media/materials/scripts/gazebo.material</uri>
+            <name>Gazebo/Red</name></script></material>
+        </visual>
+      </link>
+    </model>
+    <model name="mx_pole_2_3">
+      <static>true</static>
+      <pose>6.664 -0.301 0.300 0 0 0</pose>
+      <link name="link">
+        <collision name="collision">
+          <geometry><cylinder><radius>0.060</radius><length>0.600</length></cylinder></geometry>
+          <surface><friction><ode><mu>1.0</mu><mu2>1.0</mu2></ode></friction></surface>
+        </collision>
+        <visual name="visual">
+          <geometry><cylinder><radius>0.060</radius><length>0.600</length></cylinder></geometry>
+          <material><script><uri>file://media/materials/scripts/gazebo.material</uri>
+            <name>Gazebo/Red</name></script></material>
+        </visual>
+      </link>
+    </model>
+    <model name="mx_bump_3_0">
+      <static>true</static>
+      <pose>7.500 0.000 0.033 0.0000 0.0000 0.0000</pose>
+      <link name="link">
+        <collision name="collision">
+          <geometry><box><size>0.120 1.000 0.065</size></box></geometry>
+          <surface><friction><ode><mu>1.0</mu><mu2>1.0</mu2></ode></friction></surface>
+        </collision>
+        <visual name="visual">
+          <geometry><box><size>0.120 1.000 0.065</size></box></geometry>
+          <material><script><uri>file://media/materials/scripts/gazebo.material</uri>
+            <name>Gazebo/Orange</name></script></material>
+        </visual>
+      </link>
+    </model>
+    <model name="mx_bump_3_1">
+      <static>true</static>
+      <pose>8.100 0.000 0.033 0.0000 0.0000 0.0000</pose>
+      <link name="link">
+        <collision name="collision">
+          <geometry><box><size>0.120 1.000 0.065</size></box></geometry>
+          <surface><friction><ode><mu>1.0</mu><mu2>1.0</mu2></ode></friction></surface>
+        </collision>
+        <visual name="visual">
+          <geometry><box><size>0.120 1.000 0.065</size></box></geometry>
+          <material><script><uri>file://media/materials/scripts/gazebo.material</uri>
+            <name>Gazebo/Orange</name></script></material>
+        </visual>
+      </link>
+    </model>
+    <model name="mx_bump_3_2">
+      <static>true</static>
+      <pose>8.700 0.000 0.033 0.0000 0.0000 0.0000</pose>
+      <link name="link">
+        <collision name="collision">
+          <geometry><box><size>0.120 1.000 0.065</size></box></geometry>
+          <surface><friction><ode><mu>1.0</mu><mu2>1.0</mu2></ode></friction></surface>
+        </collision>
+        <visual name="visual">
+          <geometry><box><size>0.120 1.000 0.065</size></box></geometry>
+          <material><script><uri>file://media/materials/scripts/gazebo.material</uri>
+            <name>Gazebo/Orange</name></script></material>
+        </visual>
+      </link>
+    </model>
+    <model name="mx_bump_3_3">
+      <static>true</static>
+      <pose>9.300 0.000 0.033 0.0000 0.0000 0.0000</pose>
+      <link name="link">
+        <collision name="collision">
+          <geometry><box><size>0.120 1.000 0.065</size></box></geometry>
+          <surface><friction><ode><mu>1.0</mu><mu2>1.0</mu2></ode></friction></surface>
+        </collision>
+        <visual name="visual">
+          <geometry><box><size>0.120 1.000 0.065</size></box></geometry>
+          <material><script><uri>file://media/materials/scripts/gazebo.material</uri>
+            <name>Gazebo/Orange</name></script></material>
+        </visual>
+      </link>
+    </model>
+    <model name="mx_rough_4_0">
+      <static>true</static>
+      <pose>11.204 -0.355 0.012 0.0000 0.0000 0.0412</pose>
+      <link name="link">
+        <collision name="collision">
+          <geometry><box><size>0.232 0.236 0.024</size></box></geometry>
+          <surface><friction><ode><mu>1.0</mu><mu2>1.0</mu2></ode></friction></surface>
+        </collision>
+        <visual name="visual">
+          <geometry><box><size>0.232 0.236 0.024</size></box></geometry>
+          <material><script><uri>file://media/materials/scripts/gazebo.material</uri>
+            <name>Gazebo/Orange</name></script></material>
+        </visual>
+      </link>
+    </model>
+    <model name="mx_rough_4_1">
+      <static>true</static>
+      <pose>10.773 0.514 0.017 0.0000 0.0000 0.2260</pose>
+      <link name="link">
+        <collision name="collision">
+          <geometry><box><size>0.208 0.264 0.034</size></box></geometry>
+          <surface><friction><ode><mu>1.0</mu><mu2>1.0</mu2></ode></friction></surface>
+        </collision>
+        <visual name="visual">
+          <geometry><box><size>0.208 0.264 0.034</size></box></geometry>
+          <material><script><uri>file://media/materials/scripts/gazebo.material</uri>
+            <name>Gazebo/Wood</name></script></material>
+        </visual>
+      </link>
+    </model>
+    <model name="mx_rough_4_2">
+      <static>true</static>
+      <pose>10.503 0.520 0.012 0.0000 0.0000 3.0864</pose>
+      <link name="link">
+        <collision name="collision">
+          <geometry><box><size>0.181 0.182 0.024</size></box></geometry>
+          <surface><friction><ode><mu>1.0</mu><mu2>1.0</mu2></ode></friction></surface>
+        </collision>
+        <visual name="visual">
+          <geometry><box><size>0.181 0.182 0.024</size></box></geometry>
+          <material><script><uri>file://media/materials/scripts/gazebo.material</uri>
+            <name>Gazebo/Brown</name></script></material>
+        </visual>
+      </link>
+    </model>
+    <model name="mx_rough_4_3">
+      <static>true</static>
+      <pose>11.942 0.055 0.015 0.0000 0.0000 2.9562</pose>
+      <link name="link">
+        <collision name="collision">
+          <geometry><box><size>0.252 0.181 0.030</size></box></geometry>
+          <surface><friction><ode><mu>1.0</mu><mu2>1.0</mu2></ode></friction></surface>
+        </collision>
+        <visual name="visual">
+          <geometry><box><size>0.252 0.181 0.030</size></box></geometry>
+          <material><script><uri>file://media/materials/scripts/gazebo.material</uri>
+            <name>Gazebo/Orange</name></script></material>
+        </visual>
+      </link>
+    </model>
+    <model name="mx_rough_4_4">
+      <static>true</static>
+      <pose>11.841 -0.282 0.027 0.0000 0.0000 0.4577</pose>
+      <link name="link">
+        <collision name="collision">
+          <geometry><box><size>0.204 0.175 0.054</size></box></geometry>
+          <surface><friction><ode><mu>1.0</mu><mu2>1.0</mu2></ode></friction></surface>
+        </collision>
+        <visual name="visual">
+          <geometry><box><size>0.204 0.175 0.054</size></box></geometry>
+          <material><script><uri>file://media/materials/scripts/gazebo.material</uri>
+            <name>Gazebo/DarkGrey</name></script></material>
+        </visual>
+      </link>
+    </model>
+    <model name="goal">
+      <static>true</static>
+      <pose>12.500 0.000 0.005 0 0 0</pose>
+      <link name="link">
+        <visual name="visual">
+          <geometry><cylinder><radius>0.400</radius><length>0.01</length></cylinder></geometry>
+          <material><script><uri>file://media/materials/scripts/gazebo.material</uri>
+            <name>Gazebo/Green</name></script></material>
+        </visual>
+      </link>
+    </model>
+
+  </world>
+</sdf>
